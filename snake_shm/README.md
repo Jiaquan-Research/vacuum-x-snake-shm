@@ -171,7 +171,23 @@ Unlike Vacuum-X:
 This contrast is intentional and informative.
 
 ---
+##  Clarification on Panic / NOOP
 
+In Snake-SHM, Panic / NOOP does not represent task success,
+optimality, or recovery.
+
+It represents a *viability-preserving control output* emitted
+when no safe productive action is available under fixed logic
+and severe spatial constraint.
+
+The system is intentionally constructed such that:
+- termination is inevitable,
+- growth cannot be sustained indefinitely,
+- Panic does not "solve" the task.
+
+Snake-SHM is used solely to observe how risk pricing reshapes
+*how the agent fails*, not whether it can win.
+---
 ## Interpretation Boundaries
 
 The results support the following **restricted statement only**:
