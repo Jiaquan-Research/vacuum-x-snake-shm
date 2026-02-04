@@ -42,7 +42,7 @@ Snake-SHM is based on the classic Snake game with:
 * deterministic grid dynamics
 * growing body length
 * hard spatial constraints
-* inevitable collision-based termination
+* collision-based termination
 
 The environment is intentionally **simple and unforgiving**.
 
@@ -88,14 +88,13 @@ Importantly:
 * α does **not** add new behaviors
 * α only scales *risk sensitivity*
 
-Interpretation:
+**Interpretation:**
 
-- High α → panic earlier and more frequently  
-  (Conservative behavior; risk is priced as expensive)
+* **High α** → risk is priced **expensive** → more conservative thresholds
+  → enter panic/survival mode more readily to preserve viability.
 
-- Low α → panic later and less frequently  
-  (Aggressive behavior; risk is priced as cheap)
-
+* **Low α** → risk is priced **cheap** → more aggressive thresholds
+  → defer panic/survival mode, prioritize growth/efficiency.
 
 α is the **only experimental degree of freedom**.
 
@@ -107,6 +106,7 @@ Interpretation:
 
 ```text
 α ∈ {0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0}
+
 ```
 
 For each α:
@@ -126,7 +126,7 @@ For each run, the following are recorded:
 * **Survival Steps**
 * **Final Length**
 * **Panic Ratio**
-  (fraction of steps spent in panic / survival mode)
+(fraction of steps spent in panic / survival mode)
 
 These metrics are intentionally minimal.
 
@@ -137,16 +137,17 @@ These metrics are intentionally minimal.
 The α-sweep produces a **monotone behavioral transition**:
 
 <p align="center">
-  <img src="figures/snake_sweep_frontier.png" width="650">
+<img src="figures/snake_sweep_frontier.png" width="650">
 </p>
 
 Observed pattern:
 
 * Increasing α
+* increases panic frequency
+* reduces survival time
+* reduces overall growth
 
-  * increases panic frequency
-  * reduces survival time
-  * reduces overall growth
+
 
 There is **no optimal α**.
 
@@ -159,9 +160,9 @@ This is expected.
 Snake-SHM demonstrates that:
 
 * **Panic / NOOP cycling can be a viable survival output**
-  under extreme spatial constraint
+under extreme spatial constraint
 * Risk pricing reshapes *how* the agent survives,
-  not *whether* it can win
+not *whether* it can win
 
 Unlike Vacuum-X:
 
@@ -171,23 +172,7 @@ Unlike Vacuum-X:
 This contrast is intentional and informative.
 
 ---
-##  Clarification on Panic / NOOP
 
-In Snake-SHM, Panic / NOOP does not represent task success,
-optimality, or recovery.
-
-It represents a *viability-preserving control output* emitted
-when no safe productive action is available under fixed logic
-and severe spatial constraint.
-
-The system is intentionally constructed such that:
-- termination is inevitable,
-- growth cannot be sustained indefinitely,
-- Panic does not "solve" the task.
-
-Snake-SHM is used solely to observe how risk pricing reshapes
-*how the agent fails*, not whether it can win.
----
 ## Interpretation Boundaries
 
 The results support the following **restricted statement only**:
@@ -215,6 +200,7 @@ Primary scripts are located in:
 
 ```text
 snake_shm/src/
+
 ```
 
 ---
@@ -234,11 +220,12 @@ It is retained solely as **secondary embodied evidence**.
 ## Related Files
 
 * `shared/terminology.md`
-  Canonical definitions of Panic, NOOP, Risk Pricing
+Canonical definitions of Panic, NOOP, Risk Pricing
 * `snake_shm/src/`
-  Frozen Snake-SHM implementations
+Frozen Snake-SHM implementations
 * `snake_shm/data/`
-  Aggregated sweep results
+Aggregated sweep results
 * `snake_shm/figures/`
-  Frontier visualization
+Frontier visualization
+
 
