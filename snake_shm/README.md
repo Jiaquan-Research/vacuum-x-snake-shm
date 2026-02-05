@@ -1,153 +1,107 @@
 # Snake-SHM
-
-**Risk-Priced Behavior Shaping under Spatial Constraint**
+**Risk-priced behavior shaping under spatial constraint**
 
 ---
 
 ## Purpose
 
-**Snake-SHM** is a minimal Snake-based environment used as **secondary embodied evidence**.
+Snake-SHM provides **secondary embodied corroboration**.
 
-Its purpose is **not** to maximize score or survival, but to demonstrate a single point:
+It demonstrates that:
 
-> When control logic is fixed,
-> **risk pricing alone reshapes behavioral style**,
-> even in a tightly constrained spatial system.
+> With fixed control logic,  
+> **risk pricing alone reshapes behavioral style**,  
+> even when optimization is impossible.
 
-Snake-SHM exists to **corroborate**, not to lead.
 All primary claims are derived from **Vacuum-X**.
 
 ---
 
-## Positioning in This Repository
+## Environment
 
-* **Vacuum-X**: primary system, exposes a trade-off frontier
-* **Snake-SHM**: secondary system, validates *behavioral shaping* under constraint
+- Classic Snake grid
+- Deterministic dynamics
+- Growing body length
+- Collision-based termination
 
-Snake-SHM intentionally avoids introducing:
-
-* learning
-* policy switching
-* complex planning
-* environment scaling
-
-This is deliberate.
+Termination is **practically inevitable**
+due to finite space and growth mechanics.
 
 ---
 
-## Environment Overview
+## Control Structure
 
-Snake-SHM is based on the classic Snake game with:
+Identical across all runs:
 
-* deterministic grid dynamics
-* growing body length
-* hard spatial constraints
-* collision-based termination
-
-The environment is intentionally **simple and unforgiving**.
-
-Unlike Vacuum-X, Snake-SHM offers:
-
-* no explicit charging station
-* no long-horizon planning advantage
-* limited room for recovery once trapped
-
-This makes it suitable for observing **style changes**, not optimization.
-
----
-
-## Control Structure (Frozen)
-
-The control structure is **identical across all runs**.
-
-* No learning
-* No adaptive strategy changes
-* No parameter-dependent logic branches
+- No learning
+- No adaptation
+- No policy switching
+- No parameter-dependent branches
 
 The agent operates with:
+- greedy food-seeking baseline
+- panic / survival mode under insufficiency
 
-* a greedy food-seeking baseline
-* a panic / survival mode triggered by risk thresholds
-
-If insufficient viability is detected,
-**Panic / NOOP cycling is emitted as a valid control output**,
-not as an error state
-(see `shared/terminology.md`).
+Panic / NOOP are **valid control outputs**, not errors.
 
 ---
 
 ## Risk Pricing Parameter (α)
 
-A single scalar parameter **α** is swept.
+Single scalar parameter swept.
 
-> **α controls how strongly accumulated risk influences the panic threshold.**
+> α controls how strongly accumulated risk influences panic thresholds.
 
-Importantly:
+Properties:
+- No new actions introduced
+- No logic changes
+- Risk sensitivity only
 
-* α does **not** change the agent’s logic
-* α does **not** add new behaviors
-* α only scales *risk sensitivity*
+**Interpretation**
 
-**Interpretation:**
+- **High α** → risk priced expensive → conservative thresholds  
+  → enter panic / survival mode more readily to preserve viability
 
-* **High α** → risk is priced **expensive** → more conservative thresholds
-  → enter panic/survival mode more readily to preserve viability.
-
-* **Low α** → risk is priced **cheap** → more aggressive thresholds
-  → defer panic/survival mode, prioritize growth/efficiency.
-
-α is the **only experimental degree of freedom**.
+- **Low α** → risk priced cheap → aggressive thresholds  
+  → defer panic, prioritize growth
 
 ---
 
 ## Experimental Design
 
-### Parameter Sweep
-
 ```text
 α ∈ {0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0}
-
-```
+````
 
 For each α:
 
-* identical control logic
-* identical environment distribution
-* multiple deterministic seeds
-
-No tuning or adaptation is performed.
+* identical logic
+* identical environment
+* deterministic seeds
 
 ---
 
-### Metrics Collected
+## Metrics
 
-For each run, the following are recorded:
+Collected per run:
 
-* **Survival Steps**
-* **Final Length**
-* **Panic Ratio**
-(fraction of steps spent in panic / survival mode)
+* Survival Steps
+* Final Length
+* Panic Ratio
 
-These metrics are intentionally minimal.
+Metrics are minimal and non-optimized.
 
 ---
 
 ## Observed Behavior
 
-The α-sweep produces a **monotone behavioral transition**:
+α-sweep yields a **monotone style transition**:
 
-<p align="center">
-<img src="figures/snake_sweep_frontier.png" width="650">
-</p>
+* Increasing α:
 
-Observed pattern:
-
-* Increasing α
-* increases panic frequency
-* reduces survival time
-* reduces overall growth
-
-
+  * increases panic frequency
+  * reduces growth
+  * shortens survival
 
 There is **no optimal α**.
 
@@ -157,51 +111,39 @@ This is expected.
 
 ## Interpretation
 
-Snake-SHM demonstrates that:
+Snake-SHM shows:
 
-* **Panic / NOOP cycling can be a viable survival output**
-under extreme spatial constraint
+* Panic / NOOP can be **viable under constraint**
 * Risk pricing reshapes *how* the agent survives,
-not *whether* it can win
+  not *whether* it wins
 
 Unlike Vacuum-X:
 
-* There is no efficiency–survival “sweet spot”
-* The system exhibits a **continuous style spectrum**, not a frontier bend
-
-This contrast is intentional and informative.
+* No efficiency–survival sweet spot exists
+* Behavior forms a continuous spectrum
 
 ---
 
-## Interpretation Boundaries
+## Boundaries
 
-The results support the following **restricted statement only**:
+Supports only:
 
-> Risk pricing is sufficient to reshape behavior style
-> under fixed logic and strong spatial constraints.
+> Risk pricing reshapes behavior under fixed logic.
 
-They do **not** support:
+Does **not** support:
 
-* claims of optimality
-* performance comparisons
-* transfer claims beyond this environment
+* optimality claims
+* performance comparison
+* transfer claims
 
 ---
 
 ## Reproducibility
 
 * Deterministic seeds
-* CPU-only execution
+* CPU-only
 * Minimal dependencies
-* All outputs written to `data/` and `figures/`
-* No source-directory pollution
-
-Primary scripts are located in:
-
-```text
-snake_shm/src/
-
-```
+* Outputs in `data/` and `figures/`
 
 ---
 
@@ -209,23 +151,6 @@ snake_shm/src/
 
 Snake-SHM is **concluded and frozen**.
 
-* Clean α-sweep completed
-* Aggregated results committed
-* No additional mechanisms planned
-
-It is retained solely as **secondary embodied evidence**.
-
----
-
-## Related Files
-
-* `shared/terminology.md`
-Canonical definitions of Panic, NOOP, Risk Pricing
-* `snake_shm/src/`
-Frozen Snake-SHM implementations
-* `snake_shm/data/`
-Aggregated sweep results
-* `snake_shm/figures/`
-Frontier visualization
+It exists solely as **secondary embodied evidence**.
 
 

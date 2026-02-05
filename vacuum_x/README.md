@@ -1,189 +1,137 @@
 # Vacuum-X
-**Risk-priced efficiency–survival trade-offs under fixed control logic**
+**Primary embodied probe for efficiency–survival trade-offs under risk pricing**
 
 ---
 
 ## Purpose
-Vacuum-X is a minimal embodied grid-world system designed to expose an explicit trade-off between:
-* productive work
-* survival duration
-
-under fixed control logic, modulated solely by **risk pricing**.
 
 Vacuum-X is the **primary evidentiary system** in this repository.
-All secondary systems (e.g. Snake-SHM) exist only to corroborate its conclusions.
+
+It exposes how a fixed controller behaves when:
+- efficiency is rewarded
+- survival is constrained
+- future viability becomes insufficient
 
 ---
 
-## Core Question (Restricted)
-> How does risk pricing alone reshape behavior when
-> control logic is fixed and future viability is bounded?
+## Environment
 
-Vacuum-X does **not** attempt to find optimal policies or maximize reward.
+- Grid-world vacuum-like task
+- Limited energy and movement
+- Explicit recharge location
+- Deterministic dynamics
 
----
-
-## Environment Overview
-Vacuum-X operates in a deterministic grid world with:
-* spatial movement
-* task completion (“useful work”)
-* internal stress accumulation
-* finite survivability
-
-The agent must trade off:
-1. continuing productive actions
-2. versus entering safety / recovery behavior
-
-Termination is inevitable under sustained stress.
+The agent must balance:
+- productive work (cleaning)
+- movement cost
+- survival time
 
 ---
 
-## Control Structure (Frozen)
-Across all runs:
-* No learning
-* No adaptation
-* No policy switching
-* No parameter-dependent branches
+## Control Structure
 
-The controller is a single deterministic function class:
+- Fixed logic
+- No learning
+- No planning
+- No policy switching
+
+Controller form:
+
 > **π(s; α)**
 
-Where:
-* code paths are identical for all α
-* α only rescales sensitivity to accumulated risk
-* no new actions, states, or heuristics are introduced
-
----
-
-## Risk Pricing Parameter (α)
-A single scalar parameter **α** is swept.
-
-* α does **not** change control logic
-* α does **not** add new behaviors
-* α only rescales *how strongly risk influences admissible actions*
-
-**Baseline Definition:**
-> **α = 0.0** serves as the **greedy baseline** (risk-neutral control), representing standard efficiency-first behavior.
-
-**Interpretation:**
-* High α → risk is expensive → conservative behavior
-* Low α → risk is cheap → aggressive behavior
-
-α is the **only experimental degree of freedom**.
+Where α rescales risk sensitivity only.
 
 ---
 
 ## Life Pressure Index (LPI)
-Vacuum-X tracks an internal scalar stress signal: **Life Pressure Index (LPI)**.
 
-LPI:
-* accumulates under continued operation
-* reflects proximity to failure / infeasibility
-* is used solely for *viability assessment*, not optimization
-
-LPI is **not** a reward signal and is **not** tuned to maximize any metric.
+LPI tracks accumulated stress and proximity to failure.
 
 ### Mathematical Formulation (Simplified)
-To ensure auditability, the core risk dynamics are formally defined as:
 
 ```text
-LPI[t] = decay * LPI[t-1] + (1 - decay) * Stress_Input
+LPI[t] = decay * LPI[t-1] + (1 - decay) * Stress_Input[t]
 
-Effective_Risk_Cost = Estimated_Risk * (1 + alpha * LPI)
+Effective_Risk = Estimated_Risk * (1 + α * LPI[t])
+````
 
-```
-
-This explicitly defines LPI as a **state variable**, not a post-hoc label.
-
----
-
-## Insufficiency (Operational Definition)
-
-A state is flagged as **insufficient** when:
-
-> internal risk signals (e.g. LPI) exceed a viability threshold such that
-> **non-NOOP actions are no longer admissible** under controller safety constraints.
-
-In such states, **Panic / NOOP** is intentionally emitted.
-See `shared/terminology.md` for canonical definitions.
+* `decay ∈ (0,1)` smooths accumulation
+* α rescales the influence of accumulated stress
+* No new state variables introduced
 
 ---
 
-## Metrics Collected
+## Risk Pricing Parameter (α)
 
-Each run records:
+* α does **not** change controller logic
+* α does **not** add actions
+* α only rescales risk sensitivity
+
+**Baseline**
+
+> α = 0.0 → greedy, risk-neutral control
+
+Interpretation:
+
+* Low α → aggressive, efficiency-first
+* High α → conservative, survival-first
+
+---
+
+## Metrics
+
+Collected per run:
 
 * **Survival Steps**
-Total steps before termination.
-* **Useful Ratio**
-Fraction of steps spent performing productive work
-(i.e., not in Panic / NOOP).
-* **Rescue / Recovery Events**
-Instances where conservative behavior extends survival.
+* **Useful Work Ratio**
 
-Metrics are **descriptive**, not optimized.
+  * Fraction of steps in NORMAL operation
+  * Excludes Panic / NOOP
+* **Panic Ratio**
+* **Total Cleaned Cells**
 
----
-
-## Key Observation
-
-Sweeping α produces a clean **efficiency–survival trade-off**:
-
-* **Low α** → higher efficiency, shorter survival
-* **High α** → lower efficiency, longer survival
-* **Intermediate α** → visible frontier bend
-
-This trade-off emerges **without changing control logic**.
+Metrics are environment-defined, not α-defined.
 
 ---
 
-## What Would Falsify This Result?
+## Observations
 
-The core observation would be falsified if:
+α-sweep produces a **clear efficiency–survival trade-off**:
 
-> In states flagged as insufficient,
-> **non-NOOP actions consistently improve both survival and efficiency**
-> without increasing accumulated risk.
+* Increasing α:
 
-No such regime was observed in the frozen experiments.
+  * reduces productive work
+  * increases early safety behavior
+  * reshapes panic timing
+
+No optimal α is claimed.
 
 ---
 
-## Determinism & Reproducibility
+## Falsification
 
-* CPU-only
+The observation would be falsified if:
+
+> In insufficient states,
+> non-NOOP actions improve both survival and productivity
+> without increasing LPI.
+
+No such behavior observed.
+
+---
+
+## Reproducibility
+
 * Deterministic seeds
-* No multiprocessing
+* CPU-only
 * No stochastic resets
-* All outputs written to `data/` and `figures/`
-
-The audit target is **tag v1.0**.
-
----
-
-## Interpretation Boundaries
-
-Vacuum-X does **not** claim:
-
-* optimality
-* Pareto-optimality proofs
-* generality beyond this environment
-* normative decision-theoretic rationality
-
-The term “rational” is used strictly as:
-
-> **admissible under constraint**,
-> not optimal under utility maximization.
+* Outputs committed under `data/` and `figures/`
 
 ---
 
 ## Status
 
-**Concluded & Frozen**
+Vacuum-X is **concluded and frozen**.
 
-* All α-sweeps completed
-* Frontier figures committed
-* No further mechanisms planned
-
-Vacuum-X is retained as a reference measurement artifact.
+It serves as the **primary measurement instrument**.
 
