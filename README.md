@@ -130,7 +130,7 @@ Single deterministic controller:
 - No stochastic resets
 - Deterministic outputs to `data/` and `figures/`
 
-Audit target: **tag v1.0** (frozen).
+Audit target: **tag v1.1** (frozen).
 
 ---
 
